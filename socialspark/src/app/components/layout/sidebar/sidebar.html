@@ -1,67 +1,63 @@
-<mat-sidenav-container class="sidebar-container">
-  <mat-sidenav #sidenav mode="side" opened class="sidebar">
-    <div class="sidebar-content">
-      <!-- Navigation Menu -->
-      <nav class="nav-menu">
-        <a mat-list-item routerLink="/home" routerLinkActive="active">
-          <mat-icon matListItemIcon>home</mat-icon>
-          <span matListItemTitle>Home</span>
-        </a>
-        
-        <a mat-list-item routerLink="/explore" routerLinkActive="active">
-          <mat-icon matListItemIcon>explore</mat-icon>
-          <span matListItemTitle>Explore</span>
-        </a>
-        
-        <a mat-list-item routerLink="/messages" routerLinkActive="active">
-          <mat-icon matListItemIcon>message</mat-icon>
-          <span matListItemTitle>Messages</span>
-        </a>
-        
-        <a mat-list-item routerLink="/notifications" routerLinkActive="active">
-          <mat-icon matListItemIcon>notifications</mat-icon>
-          <span matListItemTitle>Notifications</span>
-        </a>
-        
-        <a mat-list-item routerLink="/profile" routerLinkActive="active">
-          <mat-icon matListItemIcon>person</mat-icon>
-          <span matListItemTitle>Profile</span>
-        </a>
-        
-        <a mat-list-item routerLink="/groups" routerLinkActive="active">
-          <mat-icon matListItemIcon>group</mat-icon>
-          <span matListItemTitle>Groups</span>
-        </a>
-        
-        <a mat-list-item routerLink="/events" routerLinkActive="active">
-          <mat-icon matListItemIcon>event</mat-icon>
-          <span matListItemTitle>Events</span>
-        </a>
-      </nav>
-      
-      <!-- Create Post Button -->
-      <div class="create-post-section">
-        <button mat-raised-button color="primary" class="create-post-btn">
-          <mat-icon>add</mat-icon>
-          Create Post
-        </button>
-      </div>
-      
-      <!-- User Info -->
-      <div class="user-info">
-        <div class="user-avatar">
-          <mat-icon>account_circle</mat-icon>
-        </div>
-        <div class="user-details">
-          <div class="user-name">John Doe</div>
-          <div class="user-handle">@johndoe</div>
-        </div>
-      </div>
-    </div>
-  </mat-sidenav>
+<div class="sidebar-container">
+  <!-- Navigation Menu -->
+  <nav class="nav-menu">
+    <a routerLink="/home" routerLinkActive="active">
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
+    </a>
+    
+    <a href="#" (click)="$event.preventDefault()">
+      <mat-icon>explore</mat-icon>
+      <span>Explore</span>
+    </a>
+    
+    <a href="#" (click)="$event.preventDefault()">
+      <mat-icon>message</mat-icon>
+      <span>Messages</span>
+    </a>
+    
+    <a href="#" (click)="$event.preventDefault()">
+      <mat-icon>notifications</mat-icon>
+      <span>Notifications</span>
+    </a>
+    
+    <a href="#" (click)="$event.preventDefault()">
+      <mat-icon>person</mat-icon>
+      <span>Profile</span>
+    </a>
+    
+    <a href="#" (click)="$event.preventDefault()">
+      <mat-icon>group</mat-icon>
+      <span>Groups</span>
+    </a>
+    
+    <a href="#" (click)="$event.preventDefault()">
+      <mat-icon>event</mat-icon>
+      <span>Events</span>
+    </a>
+  </nav>
   
-  <!-- Main content area -->
-  <mat-sidenav-content class="main-content">
-    <ng-content></ng-content>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  <!-- Create Post Button -->
+  <div class="create-post-section">
+    <button mat-raised-button color="primary" class="create-post-btn">
+      <mat-icon>add</mat-icon>
+      Create Post
+    </button>
+  </div>
+  
+  <!-- User Info -->
+  <div class="user-info">
+    <div class="user-avatar">
+      <mat-icon>account_circle</mat-icon>
+    </div>
+    <div class="user-details">
+      <div class="user-name">John Doe</div>
+      <div class="user-handle">@johndoe</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main content area -->
+<div class="main-content">
+  <ng-content></ng-content>
+</div>

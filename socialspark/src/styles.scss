@@ -59,7 +59,7 @@ body {
 .main-content {
   display: flex;
   flex: 1;
-  min-height: calc(100vh - 64px); /* Subtract header height */
+  height: calc(100vh - 64px); /* Subtract header height */
 }
 
 /* Content area */
@@ -84,15 +84,23 @@ body {
 /* SocialSpark theme colors */
 :root {
   --primary-color: #ff6b35;
+  --primary-light: #ff8a5b;
+  --primary-dark: #e55a2b;
   --secondary-color: #f7931e;
   --accent-color: #ffd23f;
-  --background-color: #f5f5f5;
+  --background-color: #f8f9fa;
   --surface-color: #ffffff;
-  --text-primary: #333333;
-  --text-secondary: #666666;
-  --border-color: #e0e0e0;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --text-primary: #2c3e50;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  --border-color: #e9ecef;
+  --border-light: #f1f3f4;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.12);
+  --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  --gradient-light: linear-gradient(135deg, #fff5f0, #fff8f0);
 }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+

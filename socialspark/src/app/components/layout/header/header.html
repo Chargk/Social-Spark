@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" class="spark-header">
+<mat-toolbar color="primary" class="spark-header" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%) !important; box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3) !important;">
   <div class="header-content">
     <!-- Logo -->
     <div class="logo">
@@ -8,11 +8,33 @@
     
     <!-- Search Bar -->
     <div class="search-container">
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Search posts, people, groups...</mat-label>
-        <input matInput placeholder="Search SocialSpark">
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
+      <div class="custom-search-wrapper" 
+           [class.expanded]="isSearchExpanded"
+           title="Search posts, people, groups..."
+           (click)="expandSearch()">
+        <input type="text" 
+               placeholder="Search posts, people, groups..." 
+               (focus)="expandSearch()" 
+               (blur)="collapseSearch()"
+               (input)="onSearchInput($event)"
+               [(ngModel)]="searchQuery"
+               class="custom-search-input">
+        <mat-icon class="custom-search-icon">search</mat-icon>
+      </div>
+      
+      <!-- Search Suggestions Dropdown -->
+      <div class="search-suggestions" *ngIf="showSuggestions && searchQuery.trim()">
+        <div class="suggestion-item" *ngFor="let suggestion of searchSuggestions" 
+             (click)="selectSuggestion(suggestion)">
+          <mat-icon class="suggestion-icon">{{ suggestion.icon }}</mat-icon>
+          <span class="suggestion-text">{{ suggestion.text }}</span>
+          <span class="suggestion-type">{{ suggestion.type }}</span>
+        </div>
+        <div class="suggestion-item suggestion-footer" *ngIf="searchSuggestions.length === 0">
+          <mat-icon class="suggestion-icon">search_off</mat-icon>
+          <span class="suggestion-text">No results found</span>
+        </div>
+      </div>
     </div>
     
     <!-- Navigation Icons -->

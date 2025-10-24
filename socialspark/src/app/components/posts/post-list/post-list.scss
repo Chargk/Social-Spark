@@ -4,9 +4,16 @@
 }
 
 .create-post-card {
-  margin-bottom: 20px;
-  border-radius: 12px;
+  margin-bottom: 24px;
+  border-radius: 16px;
   box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
 }
 
 .create-post-content {
@@ -17,8 +24,11 @@
   
   .user-avatar {
     mat-icon {
-      font-size: 2rem;
-      color: #666;
+      font-size: 2.2rem;
+      color: var(--primary-color);
+      background: var(--gradient-light);
+      border-radius: 50%;
+      padding: 4px;
     }
   }
   
@@ -36,11 +46,30 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 16px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border-light);
+  
+  button {
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      color: var(--primary-color);
+      background: var(--gradient-light);
+    }
+  }
   
   .post-btn {
     border-radius: 20px;
     padding: 8px 24px;
+    background: var(--gradient-primary);
+    color: white;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-hover);
+    }
   }
 }
 
@@ -51,26 +80,32 @@
 }
 
 .post-card {
-  border-radius: 12px;
+  border-radius: 16px;
   box-shadow: var(--shadow);
-  transition: transform 0.2s ease;
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
   
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
   }
 }
 
 .post-avatar {
   mat-icon {
-    font-size: 2rem;
-    color: #666;
+    font-size: 2.2rem;
+    color: var(--primary-color);
+    background: var(--gradient-light);
+    border-radius: 50%;
+    padding: 4px;
   }
 }
 
 .post-content {
   margin: 16px 0;
   line-height: 1.6;
-  color: #333;
+  color: var(--text-primary);
+  font-size: 1rem;
 }
 
 .post-image {
@@ -87,15 +122,25 @@
 mat-card-actions {
   display: flex;
   gap: 8px;
+  padding: 16px;
+  border-top: 1px solid var(--border-light);
   
   button {
     display: flex;
     align-items: center;
-    gap: 4px;
-    color: #666;
+    gap: 6px;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    padding: 8px 12px;
     
     &:hover {
       color: var(--primary-color);
+      background: var(--gradient-light);
+    }
+    
+    mat-icon {
+      font-size: 1.2rem;
     }
   }
 }

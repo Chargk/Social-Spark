@@ -7,6 +7,6 @@ import { PostListComponent } from '../../components/posts/post-list/post-list';
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class Home {
+export class HomeComponent {
 
 }

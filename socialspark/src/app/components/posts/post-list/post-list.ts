@@ -19,7 +19,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './post-list.html',
   styleUrl: './post-list.scss',
 })
-export class PostList {
+export class PostListComponent {
   samplePosts = [
     {
       author: 'John Doe',
