@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'spark-post-list',
@@ -14,12 +15,16 @@ import { CommonModule } from '@angular/common';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    CommonModule
+    CommonModule,
+    FormsModule
   ],
   templateUrl: './post-list.html',
   styleUrl: './post-list.scss',
 })
 export class PostListComponent {
+  newPostText = '';
+  isPostInputFocused = false;
+  
   samplePosts = [
     {
       author: 'John Doe',
@@ -46,4 +51,35 @@ export class PostListComponent {
       image: null
     }
   ];
+
+  onPostInputFocus() {
+    this.isPostInputFocused = true;
+  }
+
+  onPostInputBlur() {
+    // Delay to allow clicking on action buttons
+    setTimeout(() => {
+      this.isPostInputFocused = false;
+    }, 200);
+  }
+
+  createPost() {
+    if (this.newPostText.trim()) {
+      // Here you would typically send the post to your backend
+      console.log('Creating post:', this.newPostText);
+      
+      // Add to the beginning of posts array
+      this.samplePosts.unshift({
+        author: 'You',
+        time: 'now',
+        content: this.newPostText,
+        likes: 0,
+        comments: 0,
+        image: null
+      });
+      
+      // Clear the input
+      this.newPostText = '';
+    }
+  }
 }

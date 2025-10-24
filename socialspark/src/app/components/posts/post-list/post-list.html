@@ -1,37 +1,40 @@
 <div class="post-list-container">
   <!-- Create Post Card -->
-  <mat-card class="create-post-card">
-    <mat-card-content>
-      <div class="create-post-content">
-        <div class="user-avatar">
-          <mat-icon>account_circle</mat-icon>
-        </div>
-        <div class="post-input">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>What's on your mind?</mat-label>
-            <textarea matInput placeholder="Share your thoughts..." rows="3"></textarea>
-          </mat-form-field>
-        </div>
+  <div class="create-post-card">
+    <div class="create-post-content">
+      <div class="user-avatar">
+        <mat-icon>account_circle</mat-icon>
       </div>
-      <div class="post-actions">
-        <button mat-button color="primary">
+      <div class="post-input-wrapper">
+        <input type="text" 
+               class="post-input" 
+               placeholder="What's on your mind?" 
+               [(ngModel)]="newPostText"
+               (focus)="onPostInputFocus()"
+               (blur)="onPostInputBlur()">
+      </div>
+    </div>
+    <div class="post-actions" [class.expanded]="isPostInputFocused">
+      <div class="action-buttons">
+        <button class="action-btn photo-btn" title="Add Photo">
           <mat-icon>image</mat-icon>
-          Photo
+          <span>Photo</span>
         </button>
-        <button mat-button color="primary">
+        <button class="action-btn video-btn" title="Add Video">
           <mat-icon>videocam</mat-icon>
-          Video
+          <span>Video</span>
         </button>
-        <button mat-button color="primary">
+        <button class="action-btn location-btn" title="Add Location">
           <mat-icon>location_on</mat-icon>
-          Location
-        </button>
-        <button mat-raised-button color="primary" class="post-btn">
-          Post
+          <span>Location</span>
         </button>
       </div>
-    </mat-card-content>
-  </mat-card>
+      <button class="post-btn" [disabled]="!newPostText.trim()" (click)="createPost()">
+        <mat-icon>send</mat-icon>
+        <span>Post</span>
+      </button>
+    </div>
+  </div>
   
   <!-- Sample Posts -->
   <div class="posts">
