@@ -32,7 +32,8 @@ export class PostListComponent {
       content: 'Just had an amazing day exploring the city! The architecture here is incredible. #exploring #citylife',
       likes: 24,
       comments: 8,
-      image: null
+      image: null,
+      liked: false
     },
     {
       author: 'Sarah Wilson',
@@ -40,7 +41,8 @@ export class PostListComponent {
       content: 'Working on a new project and feeling inspired! Sometimes the best ideas come when you least expect them.',
       likes: 15,
       comments: 3,
-      image: null
+      image: null,
+      liked: false
     },
     {
       author: 'Mike Johnson',
@@ -48,9 +50,20 @@ export class PostListComponent {
       content: 'Beautiful sunset from my balcony tonight. Nature never fails to amaze me.',
       likes: 42,
       comments: 12,
-      image: null
+      image: null,
+      liked: false
     }
   ];
+
+  toggleLike(post: any) {
+    if (post.liked) {
+      post.likes--;
+      post.liked = false;
+    } else {
+      post.likes++;
+      post.liked = true;
+    }
+  }
 
   onPostInputFocus() {
     this.isPostInputFocused = true;
@@ -75,7 +88,8 @@ export class PostListComponent {
         content: this.newPostText,
         likes: 0,
         comments: 0,
-        image: null
+        image: null,
+        liked: false
       });
       
       // Clear the input

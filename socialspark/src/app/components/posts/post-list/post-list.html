@@ -38,36 +38,38 @@
   
   <!-- Sample Posts -->
   <div class="posts">
-    <mat-card class="post-card" *ngFor="let post of samplePosts">
-      <mat-card-header>
-        <div mat-card-avatar class="post-avatar">
+    <div class="post-card" *ngFor="let post of samplePosts">
+      <div class="post-header">
+        <div class="post-avatar">
           <mat-icon>account_circle</mat-icon>
         </div>
-        <mat-card-title>{{ post.author }}</mat-card-title>
-        <mat-card-subtitle>{{ post.time }}</mat-card-subtitle>
-      </mat-card-header>
+        <div class="post-author-info">
+          <h3 class="post-author">{{ post.author }}</h3>
+          <span class="post-time">{{ post.time }}</span>
+        </div>
+      </div>
       
-      <mat-card-content>
+      <div class="post-body">
         <p class="post-content">{{ post.content }}</p>
         <div class="post-image" *ngIf="post.image">
           <img [src]="post.image" [alt]="post.content">
         </div>
-      </mat-card-content>
+      </div>
       
-      <mat-card-actions>
-        <button mat-button>
+      <div class="post-actions-bar">
+        <button class="action-btn like-btn" [class.liked]="post.liked" (click)="toggleLike(post)">
           <mat-icon>thumb_up</mat-icon>
-          {{ post.likes }}
+          <span>{{ post.likes }}</span>
         </button>
-        <button mat-button>
+        <button class="action-btn comment-btn">
           <mat-icon>comment</mat-icon>
-          {{ post.comments }}
+          <span>{{ post.comments }}</span>
         </button>
-        <button mat-button>
+        <button class="action-btn share-btn">
           <mat-icon>share</mat-icon>
-          Share
+          <span>Share</span>
         </button>
-      </mat-card-actions>
-    </mat-card>
+      </div>
+    </div>
   </div>
 </div>
