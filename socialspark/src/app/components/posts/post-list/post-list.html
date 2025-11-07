@@ -7,6 +7,7 @@
       </div>
       <div class="post-input-wrapper">
         <input type="text" 
+               id="post-input-field"
                class="post-input" 
                placeholder="What's on your mind?" 
                [(ngModel)]="newPostText"
@@ -36,9 +37,23 @@
     </div>
   </div>
   
-  <!-- Sample Posts -->
-  <div class="posts">
-    <div class="post-card" *ngFor="let post of samplePosts">
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="error">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+  
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="loading-spinner">
+      <mat-icon>autorenew</mat-icon>
+      <span>Loading posts...</span>
+    </div>
+  </div>
+  
+  <!-- Posts List -->
+  <div class="posts" *ngIf="!isLoading">
+    <div class="post-card" *ngFor="let post of posts">
       <div class="post-header">
         <div class="post-avatar">
           <mat-icon>account_circle</mat-icon>

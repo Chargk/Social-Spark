@@ -3,6 +3,61 @@
   margin: 0 auto;
 }
 
+/* Loading State */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  
+  .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    color: #ff6b35;
+    
+    mat-icon {
+      font-size: 3rem;
+      animation: spin 1s linear infinite;
+      filter: drop-shadow(0 2px 4px rgba(255, 107, 53, 0.3));
+    }
+    
+    span {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error Message */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(247, 147, 30, 0.1));
+  border: 2px solid rgba(255, 107, 53, 0.3);
+  border-radius: 16px;
+  color: #e55a2b;
+  font-weight: 600;
+  
+  mat-icon {
+    color: #e55a2b;
+    font-size: 1.5rem;
+  }
+}
+
 // Beautiful Custom Post Creation Box
 .create-post-card {
   background: white;

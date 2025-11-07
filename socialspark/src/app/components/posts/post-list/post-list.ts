@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,6 +6,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PostService } from '../../../services/post.service';
+import { Post, CreatePostDto } from '../../../models/post.model';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'spark-post-list',
@@ -21,48 +24,130 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './post-list.html',
   styleUrl: './post-list.scss',
 })
-export class PostListComponent {
+export class PostListComponent implements OnInit {
+  // Form state
   newPostText = '';
   isPostInputFocused = false;
   
-  samplePosts = [
+  // Posts data
+  posts: Post[] = [];
+  isLoading = false;
+  error: string | null = null;
+  
+  // Inject PostService through constructor - Angular Dependency Injection
+  constructor(private postService: PostService) {}
+  
+  // OnInit lifecycle hook - runs when component is initialized
+  ngOnInit(): void {
+    this.loadPosts();
+  }
+  
+  // Load posts from API
+  loadPosts(): void {
+    this.isLoading = true;
+    this.error = null;
+    
+    // Observable pattern - subscribe to get data when it arrives
+    this.postService.getPosts().pipe(
+      // Handle errors gracefully - if API fails, show error but don't crash
+      catchError(error => {
+        console.error('Error loading posts:', error);
+        this.error = 'Failed to load posts. Using sample data.';
+        // Return sample data as fallback
+        return of(this.getSamplePosts());
+      })
+    ).subscribe({
+      next: (posts) => {
+        this.posts = posts;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        // This should not happen due to catchError, but just in case
+        this.error = 'Unexpected error occurred';
+        this.posts = this.getSamplePosts();
+        this.isLoading = false;
+      }
+    });
+  }
+  
+  // Fallback sample posts if API is not ready yet
+  private getSamplePosts(): Post[] {
+    const now = new Date();
+    return [
     {
+      id: '1',
       author: 'John Doe',
+      authorId: 'user1',
       time: '2 hours ago',
       content: 'Just had an amazing day exploring the city! The architecture here is incredible. #exploring #citylife',
       likes: 24,
       comments: 8,
-      image: null,
-      liked: false
+      image: undefined,
+      liked: false,
+      createdAt: new Date(now.getTime() - 2 * 60 * 60 * 1000) // 2 hours ago
     },
     {
+      id: '2',
       author: 'Sarah Wilson',
+      authorId: 'user2',
       time: '4 hours ago',
       content: 'Working on a new project and feeling inspired! Sometimes the best ideas come when you least expect them.',
       likes: 15,
       comments: 3,
-      image: null,
-      liked: false
+      image: undefined,
+      liked: false,
+      createdAt: new Date(now.getTime() - 4 * 60 * 60 * 1000) // 4 hours ago
     },
     {
+      id: '3',
       author: 'Mike Johnson',
+      authorId: 'user3',
       time: '6 hours ago',
       content: 'Beautiful sunset from my balcony tonight. Nature never fails to amaze me.',
       likes: 42,
       comments: 12,
-      image: null,
-      liked: false
+      image: undefined,
+      liked: false,
+      createdAt: new Date(now.getTime() - 6 * 60 * 60 * 1000) // 6 hours ago
     }
   ];
+  }
 
-  toggleLike(post: any) {
-    if (post.liked) {
-      post.likes--;
-      post.liked = false;
-    } else {
-      post.likes++;
-      post.liked = true;
-    }
+  // Toggle like on a post - optimistic UI update
+  toggleLike(post: Post): void {
+    // Save original state for potential revert
+    const wasLiked = post.liked;
+    const originalLikes = post.likes;
+    
+    // Optimistic update - update UI immediately for better UX
+    post.liked = !post.liked;
+    post.likes = post.liked ? post.likes + 1 : post.likes - 1;
+    
+    // Then call API to persist the change
+    const likeOperation = post.liked 
+      ? this.postService.likePost(post.id)
+      : this.postService.unlikePost(post.id);
+    
+    likeOperation.pipe(
+      catchError(error => {
+        // If API call fails, revert the optimistic update
+        console.error('Error toggling like:', error);
+        post.liked = wasLiked;
+        post.likes = originalLikes; // Revert to original count
+        return of(null);
+      })
+    ).subscribe((updatedPost: Post | null) => {
+      // If API call succeeds, only update likes count from server (don't replace entire post)
+      // This prevents double-counting issues
+      if (updatedPost) {
+        const index = this.posts.findIndex(p => p.id === post.id);
+        if (index !== -1) {
+          // Only update likes and liked status, keep other properties from current post
+          this.posts[index].likes = updatedPost.likes;
+          this.posts[index].liked = updatedPost.liked;
+        }
+      }
+    });
   }
 
   onPostInputFocus() {
@@ -76,24 +161,55 @@ export class PostListComponent {
     }, 200);
   }
 
-  createPost() {
-    if (this.newPostText.trim()) {
-      // Here you would typically send the post to your backend
-      console.log('Creating post:', this.newPostText);
-      
-      // Add to the beginning of posts array
-      this.samplePosts.unshift({
-        author: 'You',
-        time: 'now',
-        content: this.newPostText,
-        likes: 0,
-        comments: 0,
-        image: null,
-        liked: false
-      });
-      
-      // Clear the input
-      this.newPostText = '';
+  // Create a new post through API
+  createPost(): void {
+    if (!this.newPostText.trim()) {
+      return; // Don't create empty posts
     }
+    
+    const postData: CreatePostDto = {
+      content: this.newPostText.trim()
+    };
+    
+    // Optimistic update - add post immediately for better UX
+    const tempPost: Post = {
+      id: 'temp-' + Date.now(), // Temporary ID
+      author: 'You', // Will be replaced by server response
+      authorId: 'current-user',
+      time: 'now',
+      content: postData.content,
+      likes: 0,
+      comments: 0,
+      liked: false,
+      createdAt: new Date()
+    };
+    
+    this.posts.unshift(tempPost);
+    const newPostText = this.newPostText;
+    this.newPostText = ''; // Clear input immediately
+    
+    // Call API to create post
+    this.postService.createPost(postData).pipe(
+      catchError(error => {
+        // If API call fails, remove the optimistic post
+        console.error('Error creating post:', error);
+        const index = this.posts.findIndex(p => p.id === tempPost.id);
+        if (index !== -1) {
+          this.posts.splice(index, 1);
+        }
+        this.newPostText = newPostText; // Restore text
+        this.error = 'Failed to create post. Please try again.';
+        return of(null);
+      })
+    ).subscribe(newPost => {
+      if (newPost) {
+        // Replace temporary post with real post from server
+        const index = this.posts.findIndex(p => p.id === tempPost.id);
+        if (index !== -1) {
+          this.posts[index] = newPost;
+        }
+        this.error = null;
+      }
+    });
   }
 }
