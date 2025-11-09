@@ -76,7 +76,7 @@
           <mat-icon>thumb_up</mat-icon>
           <span>{{ post.likes }}</span>
         </button>
-        <button class="action-btn comment-btn">
+        <button class="action-btn comment-btn" (click)="toggleComments(post.id)">
           <mat-icon>comment</mat-icon>
           <span>{{ post.comments }}</span>
         </button>
@@ -84,6 +84,59 @@
           <mat-icon>share</mat-icon>
           <span>Share</span>
         </button>
+      </div>
+      
+      <!-- Comments Section -->
+      <div class="comments-section" *ngIf="isCommentsOpen(post.id)">
+        <!-- Loading State -->
+        <div class="comments-loading" *ngIf="isLoadingComments(post.id)">
+          <mat-icon class="spinning">autorenew</mat-icon>
+          <span>Loading comments...</span>
+        </div>
+        
+        <!-- Comments List -->
+        <div class="comments-list" *ngIf="!isLoadingComments(post.id)">
+          <div class="comment-item" *ngFor="let comment of getComments(post.id)">
+            <div class="comment-avatar">
+              <mat-icon>account_circle</mat-icon>
+            </div>
+            <div class="comment-content">
+              <div class="comment-header">
+                <span class="comment-author">{{ comment.author }}</span>
+                <span class="comment-time">{{ comment.createdAt | date:'short' }}</span>
+              </div>
+              <p class="comment-text">{{ comment.content }}</p>
+              <div class="comment-actions">
+                <button class="comment-like-btn" [class.liked]="comment.liked" (click)="toggleCommentLike(comment)">
+                  <mat-icon>thumb_up</mat-icon>
+                  <span>{{ comment.likes }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Empty State -->
+          <div class="no-comments" *ngIf="getComments(post.id).length === 0">
+            <mat-icon>comment_outline</mat-icon>
+            <p>No comments yet. Be the first to comment!</p>
+          </div>
+        </div>
+        
+        <!-- Add Comment Form -->
+        <div class="add-comment-form">
+          <div class="comment-input-wrapper">
+            <input 
+              type="text" 
+              class="comment-input" 
+              placeholder="Write a comment..." 
+              [value]="getNewCommentText(post.id)"
+              (input)="setNewCommentText(post.id, $any($event.target).value)"
+              (keydown.enter)="addComment(post.id)">
+            <button class="comment-submit-btn" (click)="addComment(post.id)" [disabled]="!getNewCommentText(post.id)?.trim()">
+              <mat-icon>send</mat-icon>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

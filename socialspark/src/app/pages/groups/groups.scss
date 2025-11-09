@@ -1,0 +1,36 @@
+.groups-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+    
+    mat-icon {
+      font-size: 5rem;
+      color: #ff6b35;
+      margin-bottom: 24px;
+    }
+    
+    h2 {
+      font-size: 2rem;
+      margin: 0 0 12px 0;
+      color: #333;
+    }
+    
+    p {
+      font-size: 1.1rem;
+      margin: 0 0 8px 0;
+      color: #666;
+    }
+    
+    .coming-soon {
+      font-size: 0.9rem;
+      color: #999;
+      font-style: italic;
+    }
+  }
+}
+

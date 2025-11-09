@@ -1,13 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
+import { User } from '../../../models/user.model';
+import { Subscription } from 'rxjs';
 
 @Component({
+  standalone: true,
   selector: 'spark-sidebar',
   imports: [
+    CommonModule,
     MatSidenavModule,
     MatListModule,
     MatIconModule,
@@ -17,7 +23,25 @@ import { RouterModule } from '@angular/router';
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit, OnDestroy {
+  currentUser: User | null = null;
+  private userSubscription?: Subscription;
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    // Subscribe to current user changes
+    this.userSubscription = this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
+
   /**
    * Focus the post input field when "Create Post" button is clicked
    * This scrolls to the input and focuses it for better UX

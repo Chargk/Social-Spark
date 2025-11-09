@@ -1,0 +1,11 @@
+.main-content {
+  &.full-width {
+    margin-left: 0;
+    
+    .content-area {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+}
+

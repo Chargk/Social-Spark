@@ -1,0 +1,64 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>SocialSpark</h1>
+      <p>Welcome back! Please login to your account.</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="error">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ error }}</span>
+      </div>
+
+      <!-- Email Field -->
+      <div class="form-field">
+        <mat-icon class="field-icon">email</mat-icon>
+        <input
+          type="email"
+          [(ngModel)]="credentials.email"
+          name="email"
+          placeholder="Email"
+          class="form-input"
+          required
+          [disabled]="isLoading">
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-field">
+        <mat-icon class="field-icon">lock</mat-icon>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          [(ngModel)]="credentials.password"
+          name="password"
+          placeholder="Password"
+          class="form-input"
+          required
+          [disabled]="isLoading">
+        <button
+          type="button"
+          class="password-toggle"
+          (click)="togglePasswordVisibility()">
+          <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="isLoading">
+        <mat-icon *ngIf="!isLoading">login</mat-icon>
+        <mat-icon *ngIf="isLoading" class="spinning">autorenew</mat-icon>
+        <span>{{ isLoading ? 'Logging in...' : 'Login' }}</span>
+      </button>
+
+      <!-- Register Link -->
+      <div class="auth-link">
+        <p>Don't have an account? <a routerLink="/register">Sign up</a></p>
+      </div>
+    </form>
+  </div>
+</div>
+

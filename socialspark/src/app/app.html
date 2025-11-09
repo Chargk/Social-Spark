@@ -1,12 +1,12 @@
 <!-- SocialSpark - Social Platform -->
 <div class="app-container">
   <!-- Header -->
-  <spark-header></spark-header>
+  <spark-header *ngIf="showLayout"></spark-header>
   
   <!-- Main Content -->
-  <div class="main-content">
+  <div class="main-content" [class.full-width]="!showLayout">
     <!-- Sidebar -->
-    <spark-sidebar></spark-sidebar>
+    <spark-sidebar *ngIf="showLayout"></spark-sidebar>
     
     <!-- Content Area -->
     <main class="content-area">

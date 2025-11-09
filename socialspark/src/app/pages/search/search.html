@@ -1,0 +1,75 @@
+<div class="search-container">
+  <!-- Search Header -->
+  <div class="search-header">
+    <h1>Search Results</h1>
+    <p *ngIf="searchQuery">Searching for: "{{ searchQuery }}"</p>
+  </div>
+
+  <!-- Search Form -->
+  <div class="search-form-container">
+    <form (ngSubmit)="onSearchSubmit($event)" class="search-form">
+      <div class="search-input-wrapper">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          name="searchQuery"
+          placeholder="Search posts, people, groups..."
+          class="search-input"
+          (keydown.enter)="onSearchSubmit($event)">
+        <button type="submit" class="search-btn">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-icon class="spinning">autorenew</mat-icon>
+    <span>Searching...</span>
+  </div>
+
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="error && !isLoading">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Search Results -->
+  <div class="search-results" *ngIf="!isLoading && !error">
+    <!-- Results Count -->
+    <div class="results-count" *ngIf="searchQuery">
+      <span>{{ totalResults }} result{{ totalResults !== 1 ? 's' : '' }} found</span>
+    </div>
+
+    <!-- Results List -->
+    <div class="results-list" *ngIf="searchResults.length > 0">
+      <div class="result-item" *ngFor="let result of searchResults" (click)="navigateToResult(result)">
+        <div class="result-icon">
+          <mat-icon>{{ getIconForType(result.type) }}</mat-icon>
+        </div>
+        <div class="result-content">
+          <h3 class="result-title">{{ result.title }}</h3>
+          <p class="result-subtitle" *ngIf="result.subtitle">{{ result.subtitle }}</p>
+          <span class="result-type">{{ result.type }}</span>
+        </div>
+        <mat-icon class="result-arrow">chevron_right</mat-icon>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="searchResults.length === 0 && searchQuery">
+      <mat-icon>search_off</mat-icon>
+      <h2>No results found</h2>
+      <p>Try different keywords or check your spelling</p>
+    </div>
+
+    <!-- Initial State -->
+    <div class="initial-state" *ngIf="!searchQuery">
+      <mat-icon>search</mat-icon>
+      <h2>Start searching</h2>
+      <p>Enter a keyword to search for posts, people, or groups</p>
+    </div>
+  </div>
+</div>
+

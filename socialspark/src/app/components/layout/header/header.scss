@@ -90,6 +90,22 @@
       margin-left: 0;
       transform: scale(1.2);
     }
+    
+    .custom-search-icon-btn {
+      background: transparent !important;
+      border: none !important;
+    }
+  }
+  
+  .custom-search-icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
   }
   
   &:hover {

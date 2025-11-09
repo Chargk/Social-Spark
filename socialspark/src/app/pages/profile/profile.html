@@ -1,0 +1,70 @@
+<div class="profile-container">
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="profile-cover">
+      <div class="cover-image"></div>
+      <button class="edit-cover-btn">
+        <mat-icon>camera_alt</mat-icon>
+        <span>Edit Cover</span>
+      </button>
+    </div>
+    
+    <div class="profile-info">
+      <div class="profile-avatar">
+        <mat-icon>account_circle</mat-icon>
+      </div>
+      <div class="profile-details">
+        <h1 class="profile-name">{{ user.name }}</h1>
+        <p class="profile-handle">{{ user.handle }}</p>
+        <p class="profile-bio">{{ user.bio }}</p>
+        
+        <div class="profile-stats">
+          <div class="stat-item">
+            <span class="stat-value">{{ user.posts }}</span>
+            <span class="stat-label">Posts</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ user.followers }}</span>
+            <span class="stat-label">Followers</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ user.following }}</span>
+            <span class="stat-label">Following</span>
+          </div>
+        </div>
+        
+        <button class="edit-profile-btn">
+          <mat-icon>edit</mat-icon>
+          <span>Edit Profile</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Profile Content -->
+  <div class="profile-content">
+    <div class="profile-tabs">
+      <button class="tab-btn active">
+        <mat-icon>grid_on</mat-icon>
+        <span>Posts</span>
+      </button>
+      <button class="tab-btn">
+        <mat-icon>favorite</mat-icon>
+        <span>Liked</span>
+      </button>
+      <button class="tab-btn">
+        <mat-icon>bookmark</mat-icon>
+        <span>Saved</span>
+      </button>
+    </div>
+    
+    <!-- Posts Grid - will be populated later -->
+    <div class="posts-grid">
+      <div class="empty-state">
+        <mat-icon>grid_on</mat-icon>
+        <p>No posts yet</p>
+      </div>
+    </div>
+  </div>
+</div>
+

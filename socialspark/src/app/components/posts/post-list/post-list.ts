@@ -7,10 +7,13 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../../../services/post.service';
+import { CommentService } from '../../../services/comment.service';
 import { Post, CreatePostDto } from '../../../models/post.model';
+import { Comment, CreateCommentDto } from '../../../models/comment.model';
 import { catchError, of } from 'rxjs';
 
 @Component({
+  standalone: true,
   selector: 'spark-post-list',
   imports: [
     MatCardModule,
@@ -34,8 +37,20 @@ export class PostListComponent implements OnInit {
   isLoading = false;
   error: string | null = null;
   
-  // Inject PostService through constructor - Angular Dependency Injection
-  constructor(private postService: PostService) {}
+  // Comments data - Map of postId to comments array
+  commentsMap: Map<string, Comment[]> = new Map();
+  // Map of postId to whether comments section is open
+  commentsOpenMap: Map<string, boolean> = new Map();
+  // Map of postId to new comment text
+  newCommentTextMap: Map<string, string> = new Map();
+  // Map of postId to loading state for comments
+  commentsLoadingMap: Map<string, boolean> = new Map();
+  
+  // Inject services through constructor - Angular Dependency Injection
+  constructor(
+    private postService: PostService,
+    private commentService: CommentService
+  ) {}
   
   // OnInit lifecycle hook - runs when component is initialized
   ngOnInit(): void {
@@ -209,6 +224,179 @@ export class PostListComponent implements OnInit {
           this.posts[index] = newPost;
         }
         this.error = null;
+      }
+    });
+  }
+
+  // ========== Comments Methods ==========
+
+  /**
+   * Toggle comments section for a post
+   */
+  toggleComments(postId: string): void {
+    const isOpen = this.commentsOpenMap.get(postId) || false;
+    this.commentsOpenMap.set(postId, !isOpen);
+    
+    // If opening comments and not loaded yet, load them
+    if (!isOpen && !this.commentsMap.has(postId)) {
+      this.loadComments(postId);
+    }
+  }
+
+  /**
+   * Check if comments section is open for a post
+   */
+  isCommentsOpen(postId: string): boolean {
+    return this.commentsOpenMap.get(postId) || false;
+  }
+
+  /**
+   * Get comments for a post
+   */
+  getComments(postId: string): Comment[] {
+    return this.commentsMap.get(postId) || [];
+  }
+
+  /**
+   * Load comments for a post
+   */
+  loadComments(postId: string): void {
+    this.commentsLoadingMap.set(postId, true);
+    
+    this.commentService.getCommentsByPostId(postId).pipe(
+      catchError(error => {
+        console.error('Error loading comments:', error);
+        this.commentsLoadingMap.set(postId, false);
+        return of([]);
+      })
+    ).subscribe(comments => {
+      this.commentsMap.set(postId, comments);
+      this.commentsLoadingMap.set(postId, false);
+    });
+  }
+
+  /**
+   * Check if comments are loading for a post
+   */
+  isLoadingComments(postId: string): boolean {
+    return this.commentsLoadingMap.get(postId) || false;
+  }
+
+  /**
+   * Get new comment text for a post
+   */
+  getNewCommentText(postId: string): string {
+    return this.newCommentTextMap.get(postId) || '';
+  }
+
+  /**
+   * Set new comment text for a post
+   */
+  setNewCommentText(postId: string, text: string): void {
+    this.newCommentTextMap.set(postId, text);
+  }
+
+  /**
+   * Add a new comment to a post
+   */
+  addComment(postId: string): void {
+    const commentText = this.getNewCommentText(postId).trim();
+    if (!commentText) {
+      return; // Don't create empty comments
+    }
+
+    const commentData: CreateCommentDto = {
+      postId: postId,
+      content: commentText
+    };
+
+    // Optimistic update - add comment immediately
+    const tempComment: Comment = {
+      id: 'temp-comment-' + Date.now(),
+      postId: postId,
+      author: 'You',
+      authorId: 'current-user',
+      content: commentText,
+      likes: 0,
+      liked: false,
+      createdAt: new Date()
+    };
+
+    const currentComments = this.getComments(postId);
+    this.commentsMap.set(postId, [tempComment, ...currentComments]);
+    
+    // Update post comment count
+    const post = this.posts.find(p => p.id === postId);
+    if (post) {
+      post.comments++;
+    }
+
+    // Clear input
+    this.setNewCommentText(postId, '');
+
+    // Call API to create comment
+    this.commentService.createComment(commentData).pipe(
+      catchError(error => {
+        // If API call fails, revert the optimistic update
+        console.error('Error creating comment:', error);
+        const comments = this.getComments(postId);
+        const index = comments.findIndex(c => c.id === tempComment.id);
+        if (index !== -1) {
+          comments.splice(index, 1);
+          this.commentsMap.set(postId, comments);
+        }
+        if (post) {
+          post.comments--;
+        }
+        this.setNewCommentText(postId, commentText); // Restore text
+        return of(null);
+      })
+    ).subscribe(newComment => {
+      if (newComment) {
+        // Replace temporary comment with real comment from server
+        const comments = this.getComments(postId);
+        const index = comments.findIndex(c => c.id === tempComment.id);
+        if (index !== -1) {
+          comments[index] = newComment;
+          this.commentsMap.set(postId, comments);
+        }
+      }
+    });
+  }
+
+  /**
+   * Toggle like on a comment
+   */
+  toggleCommentLike(comment: Comment): void {
+    const wasLiked = comment.liked;
+    const originalLikes = comment.likes;
+    
+    // Optimistic update
+    comment.liked = !comment.liked;
+    comment.likes = comment.liked ? comment.likes + 1 : comment.likes - 1;
+    
+    // Call API
+    const likeOperation = comment.liked
+      ? this.commentService.likeComment(comment.id)
+      : this.commentService.unlikeComment(comment.id);
+    
+    likeOperation.pipe(
+      catchError(error => {
+        // Revert on error
+        console.error('Error toggling comment like:', error);
+        comment.liked = wasLiked;
+        comment.likes = originalLikes;
+        return of(null);
+      })
+    ).subscribe((updatedComment: Comment | null) => {
+      if (updatedComment) {
+        // Update comment with server response
+        const comments = this.getComments(comment.postId);
+        const index = comments.findIndex(c => c.id === comment.id);
+        if (index !== -1) {
+          comments[index].likes = updatedComment.likes;
+          comments[index].liked = updatedComment.liked;
+        }
       }
     });
   }

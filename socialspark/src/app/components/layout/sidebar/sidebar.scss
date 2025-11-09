@@ -249,6 +249,46 @@
       }
     }
   }
+  
+  &.login-prompt {
+    justify-content: center;
+    cursor: default;
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(247, 147, 30, 0.1));
+      
+      .login-link {
+        transform: scale(1.05);
+      }
+    }
+    
+    .login-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #ff6b35;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      background: rgba(255, 107, 53, 0.1);
+      
+      &:hover {
+        background: rgba(255, 107, 53, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+      }
+      
+      mat-icon {
+        font-size: 1.3rem;
+      }
+      
+      span {
+        font-size: 1rem;
+      }
+    }
+  }
 }
 
 .main-content {

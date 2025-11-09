@@ -1,0 +1,109 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h1>SocialSpark</h1>
+      <p>Create your account and join our community!</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="register-form">
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="error">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ error }}</span>
+      </div>
+
+      <!-- Display Name Field -->
+      <div class="form-field">
+        <mat-icon class="field-icon">badge</mat-icon>
+        <input
+          type="text"
+          [(ngModel)]="registerData.displayName"
+          name="displayName"
+          placeholder="Display Name"
+          class="form-input"
+          required
+          [disabled]="isLoading">
+      </div>
+
+      <!-- Username Field -->
+      <div class="form-field">
+        <mat-icon class="field-icon">person</mat-icon>
+        <input
+          type="text"
+          [(ngModel)]="registerData.username"
+          name="username"
+          placeholder="Username"
+          class="form-input"
+          required
+          [disabled]="isLoading">
+      </div>
+
+      <!-- Email Field -->
+      <div class="form-field">
+        <mat-icon class="field-icon">email</mat-icon>
+        <input
+          type="email"
+          [(ngModel)]="registerData.email"
+          name="email"
+          placeholder="Email"
+          class="form-input"
+          required
+          [disabled]="isLoading">
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-field">
+        <mat-icon class="field-icon">lock</mat-icon>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          [(ngModel)]="registerData.password"
+          name="password"
+          placeholder="Password"
+          class="form-input"
+          required
+          [disabled]="isLoading">
+        <button
+          type="button"
+          class="password-toggle"
+          (click)="togglePasswordVisibility()">
+          <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div class="form-field">
+        <mat-icon class="field-icon">lock</mat-icon>
+        <input
+          [type]="showConfirmPassword ? 'text' : 'password'"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          class="form-input"
+          required
+          [disabled]="isLoading">
+        <button
+          type="button"
+          class="password-toggle"
+          (click)="toggleConfirmPasswordVisibility()">
+          <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="isLoading">
+        <mat-icon *ngIf="!isLoading">person_add</mat-icon>
+        <mat-icon *ngIf="isLoading" class="spinning">autorenew</mat-icon>
+        <span>{{ isLoading ? 'Creating account...' : 'Sign Up' }}</span>
+      </button>
+
+      <!-- Login Link -->
+      <div class="auth-link">
+        <p>Already have an account? <a routerLink="/login">Login</a></p>
+      </div>
+    </form>
+  </div>
+</div>
+

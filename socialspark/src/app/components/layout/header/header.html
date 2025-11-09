@@ -8,19 +8,25 @@
     
     <!-- Search Bar -->
     <div class="search-container">
-      <div class="custom-search-wrapper" 
-           [class.expanded]="isSearchExpanded"
-           title="Search posts, people, groups..."
-           (click)="expandSearch()">
-        <input type="text" 
-               placeholder="Search posts, people, groups..." 
-               (focus)="expandSearch()" 
-               (blur)="collapseSearch()"
-               (input)="onSearchInput($event)"
-               [(ngModel)]="searchQuery"
-               class="custom-search-input">
-        <mat-icon class="custom-search-icon">search</mat-icon>
-      </div>
+      <form (submit)="onSearchSubmit($event)" class="search-form">
+        <div class="custom-search-wrapper" 
+             [class.expanded]="isSearchExpanded"
+             title="Search posts, people, groups..."
+             (click)="expandSearch()">
+          <input type="text" 
+                 placeholder="Search posts, people, groups..." 
+                 (focus)="expandSearch()" 
+                 (blur)="collapseSearch()"
+                 (input)="onSearchInput($event)"
+                 (keydown.enter)="onSearchSubmit($event)"
+                 [(ngModel)]="searchQuery"
+                 name="searchQuery"
+                 class="custom-search-input">
+          <button type="submit" class="custom-search-icon-btn">
+            <mat-icon class="custom-search-icon">search</mat-icon>
+          </button>
+        </div>
+      </form>
       
       <!-- Search Suggestions Dropdown -->
       <div class="search-suggestions" *ngIf="showSuggestions && searchQuery.trim()">
@@ -59,7 +65,7 @@
         <mat-icon>account_circle</mat-icon>
       </button>
       <mat-menu #userMenu="matMenu" class="profile-dropdown-menu">
-        <button mat-menu-item class="menu-item-profile">
+        <button mat-menu-item class="menu-item-profile" (click)="navigateToProfile()">
           <mat-icon>person</mat-icon>
           <span>Profile</span>
         </button>
@@ -68,7 +74,7 @@
           <span>Settings</span>
         </button>
         <mat-divider class="menu-divider"></mat-divider>
-        <button mat-menu-item class="menu-item-logout">
+        <button mat-menu-item class="menu-item-logout" (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>Logout</span>
         </button>

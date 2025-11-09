@@ -6,32 +6,32 @@
       <span>Home</span>
     </a>
     
-    <a href="#" (click)="$event.preventDefault()">
+    <a routerLink="/explore" routerLinkActive="active">
       <mat-icon>explore</mat-icon>
       <span>Explore</span>
     </a>
     
-    <a href="#" (click)="$event.preventDefault()">
+    <a routerLink="/messages" routerLinkActive="active">
       <mat-icon>message</mat-icon>
       <span>Messages</span>
     </a>
     
-    <a href="#" (click)="$event.preventDefault()">
+    <a routerLink="/notifications" routerLinkActive="active">
       <mat-icon>notifications</mat-icon>
       <span>Notifications</span>
     </a>
     
-    <a href="#" (click)="$event.preventDefault()">
+    <a routerLink="/profile" routerLinkActive="active">
       <mat-icon>person</mat-icon>
       <span>Profile</span>
     </a>
     
-    <a href="#" (click)="$event.preventDefault()">
+    <a routerLink="/groups" routerLinkActive="active">
       <mat-icon>group</mat-icon>
       <span>Groups</span>
     </a>
     
-    <a href="#" (click)="$event.preventDefault()">
+    <a routerLink="/events" routerLinkActive="active">
       <mat-icon>event</mat-icon>
       <span>Events</span>
     </a>
@@ -46,14 +46,22 @@
   </div>
   
   <!-- User Info -->
-  <div class="user-info">
+  <div class="user-info" *ngIf="currentUser">
     <div class="user-avatar">
       <mat-icon>account_circle</mat-icon>
     </div>
     <div class="user-details">
-      <div class="user-name">John Doe</div>
-      <div class="user-handle">@johndoe</div>
+      <div class="user-name">{{ currentUser.username || 'User' }}</div>
+      <div class="user-handle">@{{ currentUser.username || 'user' }}</div>
     </div>
+  </div>
+  
+  <!-- Login Prompt -->
+  <div class="user-info login-prompt" *ngIf="!currentUser">
+    <a routerLink="/login" class="login-link">
+      <mat-icon>login</mat-icon>
+      <span>Login</span>
+    </a>
   </div>
 </div>
 

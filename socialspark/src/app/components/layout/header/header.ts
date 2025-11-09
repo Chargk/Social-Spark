@@ -1,5 +1,6 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,8 +9,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../services/auth.service';
+import { SearchService } from '../../../services/search.service';
+import { User } from '../../../models/user.model';
+import { Subscription } from 'rxjs';
 
 @Component({
+  standalone: true,
   selector: 'spark-header',
   imports: [
     CommonModule,
@@ -26,11 +32,32 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './header.scss',
   encapsulation: ViewEncapsulation.None
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
   isSearchExpanded = false;
   searchQuery = '';
   showSuggestions = false;
   searchSuggestions: any[] = [];
+  currentUser: User | null = null;
+  private userSubscription?: Subscription;
+
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private searchService: SearchService
+  ) {}
+
+  ngOnInit() {
+    // Subscribe to current user changes
+    this.userSubscription = this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
 
   expandSearch() {
     this.isSearchExpanded = true;
@@ -48,37 +75,69 @@ export class HeaderComponent {
 
   onSearchInput(event: any) {
     const query = event.target.value.trim();
+    this.searchQuery = query;
+    
     if (query.length > 0) {
-      this.showSuggestions = true;
-      this.generateSearchSuggestions(query);
+      // Debounce search suggestions
+      this.searchService.getSuggestions(query).subscribe(suggestions => {
+        this.searchSuggestions = suggestions.map(s => ({
+          text: s.title,
+          type: s.type,
+          icon: this.getIconForType(s.type),
+          id: s.id
+        }));
+        this.showSuggestions = this.searchSuggestions.length > 0;
+      });
     } else {
       this.showSuggestions = false;
       this.searchSuggestions = [];
     }
   }
 
-  generateSearchSuggestions(query: string) {
-    // Mock search suggestions - in real app, this would come from API
-    const allSuggestions = [
-      { text: 'JavaScript Tutorial', type: 'Post', icon: 'article' },
-      { text: 'React Development', type: 'Post', icon: 'article' },
-      { text: 'John Doe', type: 'User', icon: 'person' },
-      { text: 'Tech Enthusiasts', type: 'Group', icon: 'group' },
-      { text: 'Web Development', type: 'Group', icon: 'group' },
-      { text: 'Angular Tips', type: 'Post', icon: 'article' },
-      { text: 'Sarah Wilson', type: 'User', icon: 'person' },
-      { text: 'Design Community', type: 'Group', icon: 'group' }
-    ];
-
-    this.searchSuggestions = allSuggestions.filter(suggestion =>
-      suggestion.text.toLowerCase().includes(query.toLowerCase())
-    ).slice(0, 5);
+  getIconForType(type: string): string {
+    switch (type) {
+      case 'Post':
+        return 'article';
+      case 'User':
+        return 'person';
+      case 'Group':
+        return 'group';
+      default:
+        return 'search';
+    }
   }
 
   selectSuggestion(suggestion: any) {
     this.searchQuery = suggestion.text;
     this.showSuggestions = false;
-    // Here you would typically navigate to the search results
-    console.log('Selected suggestion:', suggestion);
+    // Navigate to search results
+    this.performSearch();
+  }
+
+  performSearch() {
+    if (this.searchQuery.trim()) {
+      this.router.navigate(['/search'], { 
+        queryParams: { q: this.searchQuery } 
+      });
+      this.showSuggestions = false;
+    }
+  }
+
+  onSearchSubmit(event: Event) {
+    event.preventDefault();
+    this.performSearch();
+  }
+
+  navigateToProfile() {
+    this.router.navigate(['/profile']);
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
   }
 }
