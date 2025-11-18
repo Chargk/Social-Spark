@@ -1,9 +1,13 @@
 <div class="explore-container">
-  <div class="empty-state">
-    <mat-icon>explore</mat-icon>
-    <h2>Explore</h2>
-    <p>Discover new posts, people, and trends</p>
-    <p class="coming-soon">Coming soon...</p>
+<header class="explore-header">
+  <div class="header-text">
+    <h1>What’s happening across </h1>
+    <p>Open feed with every story from the community — even from people you’re not following yet.</p>
   </div>
+</header>
+
+  <section class="explore-feed">
+    <spark-post-list [showCreateCard]="false"></spark-post-list>
+  </section>
 </div>
 

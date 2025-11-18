@@ -1,9 +1,75 @@
-<div class="messages-container">
-  <div class="empty-state">
-    <mat-icon>message</mat-icon>
-    <h2>Messages</h2>
-    <p>Your conversations will appear here</p>
-    <p class="coming-soon">Coming soon...</p>
-  </div>
+<div class="messages-wrapper">
+  <aside class="conversations-panel">
+    <div class="panel-header">
+      <h1>Messages</h1>
+      <!-- <p>Stay in sync with people you collaborate with.</p> -->
+    </div>
+
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input
+        type="text"
+        placeholder="Search messages"
+        [(ngModel)]="searchTerm">
+    </div>
+
+    <div class="conversations-list">
+      <div
+        class="conversation-item"
+        *ngFor="let conversation of filteredConversations"
+        [class.active]="isSelected(conversation)"
+        (click)="selectConversation(conversation)">
+        <div class="avatar" [style.background]="conversation.avatarColor">
+          {{ conversation.name[0] }}
+        </div>
+        <div class="conversation-info">
+          <div class="conversation-top">
+            <span class="name">{{ conversation.name }}</span>
+            <span class="time">{{ conversation.lastActive }}</span>
+          </div>
+          <div class="conversation-bottom">
+            <span class="preview">{{ conversation.lastMessage }}</span>
+            <span class="unread" *ngIf="conversation.unreadCount > 0">{{ conversation.unreadCount }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="filteredConversations.length === 0">
+        <mat-icon>chat_bubble_outline</mat-icon>
+        <p>No conversations found</p>
+      </div>
+    </div>
+  </aside>
+
+  <section class="message-thread" *ngIf="selectedConversation">
+    <header class="thread-header">
+      <div class="avatar" [style.background]="selectedConversation.avatarColor">
+        {{ selectedConversation.name[0] }}
+      </div>
+      <div class="header-info">
+        <h2>{{ selectedConversation.name }}</h2>
+        <p>@{{ selectedConversation.username }} · Active {{ selectedConversation.lastActive }}</p>
+      </div>
+    </header>
+
+    <div class="thread-body">
+      <div
+        class="message"
+        *ngFor="let message of selectedConversation.messages"
+        [class.me]="message.sender === 'me'">
+        <div class="bubble">
+          <p>{{ message.content }}</p>
+        </div>
+        <span class="timestamp">{{ message.time }}</span>
+      </div>
+    </div>
+
+    <footer class="thread-composer">
+      <input type="text" placeholder="Message..." disabled>
+      <button type="button" disabled>
+        <mat-icon>send</mat-icon>
+      </button>
+    </footer>
+  </section>
 </div>
 

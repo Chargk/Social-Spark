@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,6 +28,7 @@ import { catchError, of } from 'rxjs';
   styleUrl: './post-list.scss',
 })
 export class PostListComponent implements OnInit {
+  @Input() showCreateCard = true;
   // Form state
   newPostText = '';
   isPostInputFocused = false;
