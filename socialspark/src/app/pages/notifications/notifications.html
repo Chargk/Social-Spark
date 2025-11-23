@@ -1,9 +1,91 @@
 <div class="notifications-container">
-  <div class="empty-state">
-    <mat-icon>notifications</mat-icon>
-    <h2>Notifications</h2>
-    <p>Your notifications will appear here</p>
-    <p class="coming-soon">Coming soon...</p>
+  <header class="notifications-header">
+    <div class="header-content">
+      <h1>Notifications</h1>
+      <p>Stay updated with what's happening</p>
+    </div>
+    <button class="mark-all-read-btn" *ngIf="unreadCount > 0" (click)="markAllAsRead()">
+      <mat-icon>done_all</mat-icon>
+      <span>Mark all as read</span>
+    </button>
+  </header>
+
+  <div class="notifications-filters">
+    <button
+      class="filter-btn"
+      [class.active]="filterType === 'all'"
+      (click)="filterType = 'all'">
+      All
+      <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </button>
+    <button
+      class="filter-btn"
+      [class.active]="filterType === NotificationType.Like"
+      (click)="filterType = NotificationType.Like">
+      <mat-icon>favorite</mat-icon>
+      Likes
+    </button>
+    <button
+      class="filter-btn"
+      [class.active]="filterType === NotificationType.Comment"
+      (click)="filterType = NotificationType.Comment">
+      <mat-icon>comment</mat-icon>
+      Comments
+    </button>
+    <button
+      class="filter-btn"
+      [class.active]="filterType === NotificationType.Follow"
+      (click)="filterType = NotificationType.Follow">
+      <mat-icon>person_add</mat-icon>
+      Follows
+    </button>
+    <button
+      class="filter-btn"
+      [class.active]="filterType === NotificationType.Mention"
+      (click)="filterType = NotificationType.Mention">
+      <mat-icon>alternate_email</mat-icon>
+      Mentions
+    </button>
+  </div>
+
+  <div class="search-box">
+    <mat-icon>search</mat-icon>
+    <input
+      type="text"
+      placeholder="Search notifications..."
+      [(ngModel)]="searchTerm">
+  </div>
+
+  <div class="notifications-list">
+    <div
+      class="notification-item"
+      *ngFor="let notification of filteredNotifications"
+      [class.unread]="!notification.read"
+      (click)="markAsRead(notification)">
+      <div class="notification-icon" [style.background]="getNotificationColor(notification.type)">
+        <mat-icon>{{ getIconForType(notification.type) }}</mat-icon>
+      </div>
+      <div class="notification-content">
+        <div class="notification-header">
+          <div class="user-avatar" [style.background]="notification.user.avatarColor">
+            {{ notification.user.name[0] }}
+          </div>
+          <div class="notification-text">
+            <span class="user-name">{{ notification.user.name }}</span>
+            <span class="action-text">{{ notification.content }}</span>
+          </div>
+        </div>
+        <div class="notification-time">{{ notification.time }}</div>
+      </div>
+      <div class="notification-indicator" *ngIf="!notification.read"></div>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredNotifications.length === 0">
+      <mat-icon>notifications_none</mat-icon>
+      <h3>No notifications found</h3>
+      <p *ngIf="searchTerm.trim()">Try adjusting your search or filters</p>
+      <p *ngIf="!searchTerm.trim()">You're all caught up!</p>
+    </div>
   </div>
 </div>
 
