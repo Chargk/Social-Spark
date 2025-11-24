@@ -1,9 +1,174 @@
 <div class="events-container">
-  <div class="empty-state">
-    <mat-icon>event</mat-icon>
-    <h2>Events</h2>
-    <p>Discover and join events in your area</p>
-    <p class="coming-soon">Coming soon...</p>
+  <header class="events-header">
+    <div class="header-content">
+      <h1>Events</h1>
+      <p>Find and join events happening around you</p>
+    </div>
+  </header>
+
+  <div class="events-filters">
+    <div class="filter-group">
+      <button
+        class="filter-btn"
+        [class.active]="filterType === 'upcoming'"
+        (click)="filterType = 'upcoming'">
+        <mat-icon>event</mat-icon>
+        Upcoming
+      </button>
+      <button
+        class="filter-btn"
+        [class.active]="filterType === 'past'"
+        (click)="filterType = 'past'">
+        <mat-icon>history</mat-icon>
+        Past
+      </button>
+      <button
+        class="filter-btn"
+        [class.active]="filterType === 'all'"
+        (click)="filterType = 'all'">
+        <mat-icon>list</mat-icon>
+        All
+      </button>
+    </div>
+    <div class="filter-group">
+      <button
+        class="filter-btn"
+        *ngFor="let category of categories"
+        [class.active]="selectedCategory === category"
+        (click)="selectedCategory = category">
+        {{ category === 'all' ? 'All Categories' : category }}
+      </button>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <mat-icon>search</mat-icon>
+    <input
+      type="text"
+      placeholder="Search events..."
+      [(ngModel)]="searchTerm">
+  </div>
+
+  <div class="events-section" *ngIf="joinedEvents.length > 0">
+    <h2 class="section-title">Your Events</h2>
+    <div class="events-grid">
+      <div
+        class="event-card"
+        *ngFor="let event of joinedEvents"
+        [class.joined]="event.isJoined"
+        [class.past]="isPastEvent(event)">
+        <div class="event-image" [style.background]="event.imageColor">
+          <div class="event-date-badge">
+            <span class="date-day">{{ getDateDisplay(event.date) }}</span>
+            <span class="date-month" *ngIf="getDateMonth(event.date)">{{ getDateMonth(event.date) }}</span>
+          </div>
+        </div>
+        <div class="event-content">
+          <div class="event-header">
+            <h3 class="event-title">{{ event.title }}</h3>
+            <span class="event-category">{{ event.category }}</span>
+          </div>
+          <p class="event-description">{{ event.description }}</p>
+          <div class="event-details">
+            <div class="detail">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ formatDate(event.date) }} · {{ event.time }}</span>
+            </div>
+            <div class="detail">
+              <mat-icon>location_on</mat-icon>
+              <span>{{ event.location }}</span>
+            </div>
+            <div class="detail">
+              <mat-icon>people</mat-icon>
+              <span>{{ event.attendees }}{{ event.maxAttendees ? ' / ' + event.maxAttendees : '' }} attending</span>
+            </div>
+          </div>
+          <div class="event-footer">
+            <div class="event-organizer">
+              <div class="organizer-avatar" [style.background]="event.organizer.avatarColor">
+                {{ event.organizer.name[0] }}
+              </div>
+              <span class="organizer-name">{{ event.organizer.name }}</span>
+            </div>
+            <button
+              class="join-btn joined"
+              (click)="toggleJoin(event)">
+              <mat-icon>check</mat-icon>
+              <span>Joined</span>
+            </button>
+          </div>
+          <div class="event-tags">
+            <span class="tag" *ngFor="let tag of event.tags">{{ tag }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="events-section">
+    <h2 class="section-title">{{ joinedEvents.length > 0 ? 'Discover Events' : 'All Events' }}</h2>
+    <div class="events-grid">
+      <div
+        class="event-card"
+        *ngFor="let event of discoverEvents"
+        [class.joined]="event.isJoined"
+        [class.past]="isPastEvent(event)">
+        <div class="event-image" [style.background]="event.imageColor">
+          <div class="event-date-badge">
+            <span class="date-day">{{ getDateDisplay(event.date) }}</span>
+            <span class="date-month" *ngIf="getDateMonth(event.date)">{{ getDateMonth(event.date) }}</span>
+          </div>
+        </div>
+        <div class="event-content">
+          <div class="event-header">
+            <h3 class="event-title">{{ event.title }}</h3>
+            <span class="event-category">{{ event.category }}</span>
+          </div>
+          <p class="event-description">{{ event.description }}</p>
+          <div class="event-details">
+            <div class="detail">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ formatDate(event.date) }} · {{ event.time }}</span>
+            </div>
+            <div class="detail">
+              <mat-icon>location_on</mat-icon>
+              <span>{{ event.location }}</span>
+            </div>
+            <div class="detail">
+              <mat-icon>people</mat-icon>
+              <span>{{ event.attendees }}{{ event.maxAttendees ? ' / ' + event.maxAttendees : '' }} attending</span>
+            </div>
+          </div>
+          <div class="event-footer">
+            <div class="event-organizer">
+              <div class="organizer-avatar" [style.background]="event.organizer.avatarColor">
+                {{ event.organizer.name[0] }}
+              </div>
+              <span class="organizer-name">{{ event.organizer.name }}</span>
+            </div>
+            <button
+              class="join-btn"
+              [class.joined]="event.isJoined"
+              [class.past]="isPastEvent(event)"
+              (click)="toggleJoin(event)"
+              [disabled]="isPastEvent(event)">
+              <mat-icon>{{ event.isJoined ? 'check' : 'person_add' }}</mat-icon>
+              <span>{{ event.isJoined ? 'Joined' : 'Join' }}</span>
+            </button>
+          </div>
+          <div class="event-tags">
+            <span class="tag" *ngFor="let tag of event.tags">{{ tag }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="discoverEvents.length === 0">
+      <mat-icon>event_busy</mat-icon>
+      <h3>No events found</h3>
+      <p *ngIf="searchTerm.trim()">Try adjusting your search or filters</p>
+      <p *ngIf="!searchTerm.trim()">No events match your criteria</p>
+    </div>
   </div>
 </div>
 

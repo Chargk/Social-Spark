@@ -1,9 +1,163 @@
 <div class="groups-container">
-  <div class="empty-state">
-    <mat-icon>group</mat-icon>
-    <h2>Groups</h2>
-    <p>Join groups and connect with like-minded people</p>
-    <p class="coming-soon">Coming soon...</p>
+  <header class="groups-header">
+    <div class="header-content">
+      <h1>Groups</h1>
+      <p>Discover and join communities that share your interests</p>
+    </div>
+  </header>
+
+  <div class="groups-filters">
+    <button
+      class="filter-btn"
+      *ngFor="let category of categories"
+      [class.active]="selectedCategory === category"
+      (click)="selectedCategory = category">
+      {{ category === 'all' ? 'All Groups' : category }}
+    </button>
+  </div>
+
+  <div class="search-box">
+    <mat-icon>search</mat-icon>
+    <input
+      type="text"
+      placeholder="Search groups..."
+      [(ngModel)]="searchTerm">
+  </div>
+
+  <div class="groups-section your-groups" *ngIf="joinedGroups.length > 0">
+    <div class="section-header">
+      <h2 class="section-title">
+        <mat-icon>group</mat-icon>
+        Your Groups
+      </h2>
+      <span class="section-count">{{ joinedGroups.length }}</span>
+    </div>
+    <div class="groups-grid">
+      <div
+        class="group-card"
+        *ngFor="let group of joinedGroups"
+        [class.joined]="group.isJoined">
+        <div class="group-header">
+          <div class="group-avatar" [style.background]="group.avatarColor">
+            {{ group.name[0] }}
+          </div>
+          <div class="group-info">
+            <h3 class="group-name">
+              {{ group.name }}
+              <mat-icon class="private-icon" *ngIf="group.isPrivate">lock</mat-icon>
+            </h3>
+            <span class="group-category">{{ group.category }}</span>
+          </div>
+          <button
+            class="join-btn joined"
+            (click)="toggleJoin(group)">
+            <mat-icon>check</mat-icon>
+            <span>Joined</span>
+          </button>
+        </div>
+        <p class="group-description">{{ group.description }}</p>
+        <div class="group-stats">
+          <div class="stat">
+            <mat-icon>people</mat-icon>
+            <span>{{ formatNumber(group.members) }} members</span>
+          </div>
+          <div class="stat">
+            <mat-icon>article</mat-icon>
+            <span>{{ formatNumber(group.posts) }} posts</span>
+          </div>
+        </div>
+        <div class="group-tags">
+          <span class="tag" *ngFor="let tag of group.tags">{{ tag }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="groups-section discover-groups">
+    <div class="section-header">
+      <h2 class="section-title">
+        <mat-icon>explore</mat-icon>
+        {{ joinedGroups.length > 0 ? 'Discover Groups' : 'All Groups' }}
+      </h2>
+      <span class="section-count">{{ discoverGroups.length }}</span>
+    </div>
+    <div class="groups-grid">
+      <div
+        class="group-card"
+        *ngFor="let group of discoverGroups"
+        [class.joined]="group.isJoined">
+        <div class="group-header">
+          <div class="group-avatar" [style.background]="group.avatarColor">
+            {{ group.name[0] }}
+          </div>
+          <div class="group-info">
+            <h3 class="group-name">
+              {{ group.name }}
+              <mat-icon class="private-icon" *ngIf="group.isPrivate">lock</mat-icon>
+            </h3>
+            <span class="group-category">{{ group.category }}</span>
+          </div>
+          <button
+            class="join-btn"
+            [class.joined]="group.isJoined"
+            (click)="toggleJoin(group)">
+            <mat-icon>{{ group.isJoined ? 'check' : 'person_add' }}</mat-icon>
+            <span>{{ group.isJoined ? 'Joined' : 'Join' }}</span>
+          </button>
+        </div>
+        <p class="group-description">{{ group.description }}</p>
+        <div class="group-stats">
+          <div class="stat">
+            <mat-icon>people</mat-icon>
+            <span>{{ formatNumber(group.members) }} members</span>
+          </div>
+          <div class="stat">
+            <mat-icon>article</mat-icon>
+            <span>{{ formatNumber(group.posts) }} posts</span>
+          </div>
+        </div>
+        <div class="group-tags">
+          <span class="tag" *ngFor="let tag of group.tags">{{ tag }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="discoverGroups.length === 0">
+      <mat-icon>group_off</mat-icon>
+      <h3>No groups found</h3>
+      <p *ngIf="searchTerm.trim()">Try adjusting your search or filters</p>
+      <p *ngIf="!searchTerm.trim()">No groups in this category yet</p>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" *ngIf="toastMessage" [class.success]="toastType === 'success'" [class.info]="toastType === 'info'">
+    <mat-icon>{{ toastType === 'success' ? 'check_circle' : 'info' }}</mat-icon>
+    <span>{{ toastMessage }}</span>
+  </div>
+
+  <!-- Leave Group Confirmation Modal -->
+  <div class="modal-overlay" *ngIf="showLeaveConfirm" (click)="cancelLeave()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <mat-icon class="warning-icon">warning</mat-icon>
+        <h3>Leave Group?</h3>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to leave <strong>"{{ groupToLeave?.name }}"</strong>?</p>
+        <p class="modal-subtext">You'll stop receiving updates from this group and won't be able to post until you join again.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel-btn" (click)="cancelLeave()">
+          <mat-icon>close</mat-icon>
+          <span>Cancel</span>
+        </button>
+        <button class="modal-btn confirm-btn" (click)="confirmLeave()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Leave Group</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
