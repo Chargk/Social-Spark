@@ -7,7 +7,9 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = `${environment.apiUrl}/${environment.apiVersion}`;
+  private apiUrl = environment.apiVersion 
+    ? `${environment.apiUrl}/${environment.apiVersion}`
+    : environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

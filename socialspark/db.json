@@ -1,0 +1,135 @@
+{
+  "posts": [
+    {
+      "id": "1",
+      "author": "John Doe",
+      "authorId": "user1",
+      "time": "2 hours ago",
+      "content": "Just had an amazing day exploring the city! The architecture here is incredible. #exploring #citylife",
+      "likes": 25,
+      "comments": 8,
+      "liked": true,
+      "createdAt": "2024-11-18T16:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "author": "Sarah Wilson",
+      "authorId": "user2",
+      "time": "4 hours ago",
+      "content": "Working on a new project and feeling inspired! Sometimes the best ideas come when you least expect them.",
+      "likes": 15,
+      "comments": 3,
+      "liked": false,
+      "createdAt": "2024-11-18T14:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "author": "Mike Johnson",
+      "authorId": "user3",
+      "time": "6 hours ago",
+      "content": "Beautiful sunset from my balcony tonight. Nature never fails to amaze me.",
+      "likes": 42,
+      "comments": 12,
+      "liked": false,
+      "createdAt": "2024-11-18T12:00:00.000Z"
+    },
+    {
+      "id": "397a",
+      "content": "blalalala",
+      "author": "You",
+      "authorId": "current-user",
+      "time": "just now",
+      "likes": 0,
+      "comments": 0,
+      "liked": false,
+      "createdAt": "2025-11-24T13:20:39.972Z"
+    },
+    {
+      "id": "8c4f",
+      "content": "Test post from API",
+      "author": "Test User",
+      "authorId": "test-1",
+      "time": "just now",
+      "likes": 0,
+      "comments": 0,
+      "liked": false,
+      "createdAt": "2025-11-24T13:25:00.000Z"
+    }
+  ],
+  "comments": [
+    {
+      "id": "comm1",
+      "postId": "1",
+      "author": "Alice",
+      "authorId": "userA",
+      "content": "Great post, John! Love the city vibes.",
+      "likes": 2,
+      "liked": false,
+      "createdAt": "2024-11-18T16:30:00.000Z"
+    },
+    {
+      "id": "comm2",
+      "postId": "1",
+      "author": "Bob",
+      "authorId": "userB",
+      "content": "Which city is this? Looks amazing!",
+      "likes": 5,
+      "liked": true,
+      "createdAt": "2024-11-18T17:00:00.000Z"
+    },
+    {
+      "id": "comm3",
+      "postId": "2",
+      "author": "Charlie",
+      "authorId": "userC",
+      "content": "Keep up the great work, Sarah!",
+      "likes": 1,
+      "liked": false,
+      "createdAt": "2024-11-18T15:00:00.000Z"
+    },
+    {
+      "id": "42c2",
+      "postId": "1",
+      "author": "Test User",
+      "authorId": "test-1",
+      "content": "Test comment from API",
+      "likes": 0,
+      "liked": false,
+      "createdAt": "2025-11-24T13:26:00.000Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "user-123",
+      "username": "johndoe",
+      "email": "john@example.com",
+      "displayName": "John Doe",
+      "followers": 120,
+      "following": 85,
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "search": [
+    {
+      "id": "p1",
+      "title": "Angular Best Practices",
+      "description": "Tips for writing clean Angular code.",
+      "type": "Post",
+      "link": "/post/p1"
+    },
+    {
+      "id": "u1",
+      "title": "Alice Smith",
+      "description": "Software Engineer, Angular enthusiast.",
+      "type": "User",
+      "link": "/profile/u1"
+    },
+    {
+      "id": "g1",
+      "title": "Frontend Developers",
+      "description": "Community for web frontend discussions.",
+      "type": "Group",
+      "link": "/group/g1"
+    }
+  ]
+}

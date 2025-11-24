@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Observable, of, delay, map, catchError } from 'rxjs';
 import { ApiService } from './api.service';
 import { SearchResult, SearchResponse, SearchResultType } from '../models/search.model';
 
@@ -11,10 +11,10 @@ export class SearchService {
 
   /**
    * Search across posts, users, and groups
-   * TODO: When backend is ready, replace with real API call
+   * Currently uses mock data. When backend is ready, uncomment the real API call.
    */
-  search(query: string): Observable<SearchResponse> {
-    // Mock mode: return mock search results
+  search(query: string, type?: SearchResultType): Observable<SearchResponse> {
+    // Mock mode: return mock search results (for development)
     const results = this.generateMockResults(query);
     
     const response: SearchResponse = {
@@ -23,26 +23,41 @@ export class SearchService {
       total: results.length
     };
     
-    // Simulate network delay
     return of(response).pipe(delay(400));
     
-    // Real API mode:
-    // return this.apiService.get<SearchResponse>(`search?q=${encodeURIComponent(query)}`);
+    // Real API mode (uncomment when backend is ready):
+    // const params: any = { q: query };
+    // if (type) {
+    //   params.type = type;
+    // }
+    // return this.apiService.get<SearchResponse>('search', params).pipe(
+    //   catchError(error => {
+    //     console.error('Search error:', error);
+    //     return of({ query, results: [], total: 0 });
+    //   })
+    // );
   }
 
   /**
    * Get search suggestions (autocomplete)
-   * TODO: When backend is ready, replace with real API call
+   * Currently uses mock data. When backend is ready, uncomment the real API call.
    */
   getSuggestions(query: string): Observable<SearchResult[]> {
-    // Mock mode: return mock suggestions
+    // Mock mode: return mock suggestions (for development)
     const suggestions = this.generateMockSuggestions(query);
     
-    // Simulate network delay
     return of(suggestions).pipe(delay(200));
     
-    // Real API mode:
-    // return this.apiService.get<SearchResult[]>(`search/suggestions?q=${encodeURIComponent(query)}`);
+    // Real API mode (uncomment when backend is ready):
+    // if (!query || query.length < 2) {
+    //   return of([]);
+    // }
+    // return this.apiService.get<SearchResult[]>(`search/suggestions`, { q: query }).pipe(
+    //   catchError(error => {
+    //     console.error('Suggestions error:', error);
+    //     return of([]);
+    //   })
+    // );
   }
 
   /**

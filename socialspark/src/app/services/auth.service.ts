@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of, delay } from 'rxjs';
+import { Observable, BehaviorSubject, of, delay, map, catchError } from 'rxjs';
 import { ApiService } from './api.service';
 import { User } from '../models/user.model';
 
@@ -38,11 +38,10 @@ export class AuthService {
 
   /**
    * Login user
-   * TODO: When backend is ready, replace with real API call
+   * Currently uses mock data. When backend is ready, uncomment the real API call.
    */
   login(credentials: LoginCredentials): Observable<AuthResponse> {
-    // Mock mode: simulate login
-    // In real app, validate credentials and return user data
+    // Mock mode: simulate login (for development)
     const username = credentials.email.split('@')[0];
     const mockUser: User = {
       id: 'user-123',
@@ -62,19 +61,27 @@ export class AuthService {
       token: mockToken
     };
     
-    // Simulate API delay
     return of(response).pipe(delay(500));
     
-    // Real API mode:
-    // return this.api.post<AuthResponse>('auth/login', credentials);
+    // Real API mode (uncomment when backend is ready):
+    // return this.api.post<AuthResponse>('auth/login', credentials).pipe(
+    //   map(response => {
+    //     this.setAuthData(response.user, response.token);
+    //     return response;
+    //   }),
+    //   catchError(error => {
+    //     console.error('Login error:', error);
+    //     throw error;
+    //   })
+    // );
   }
 
   /**
    * Register new user
-   * TODO: When backend is ready, replace with real API call
+   * Currently uses mock data. When backend is ready, uncomment the real API call.
    */
   register(data: RegisterData): Observable<AuthResponse> {
-    // Mock mode: simulate registration
+    // Mock mode: simulate registration (for development)
     const mockUser: User = {
       id: 'user-' + Date.now(),
       username: data.username,
@@ -93,11 +100,19 @@ export class AuthService {
       token: mockToken
     };
     
-    // Simulate API delay
     return of(response).pipe(delay(600));
     
-    // Real API mode:
-    // return this.api.post<AuthResponse>('auth/register', data);
+    // Real API mode (uncomment when backend is ready):
+    // return this.api.post<AuthResponse>('auth/register', data).pipe(
+    //   map(response => {
+    //     this.setAuthData(response.user, response.token);
+    //     return response;
+    //   }),
+    //   catchError(error => {
+    //     console.error('Registration error:', error);
+    //     throw error;
+    //   })
+    // );
   }
 
   logout(): void {
